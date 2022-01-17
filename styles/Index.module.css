@@ -1,0 +1,32 @@
+.mainContainer {
+  background-color: #333333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.centerContainer {
+  display: flex;
+  width: 70vw;
+  height: 70vh;
+}
+.leftContainer {
+  width: 60% !important;
+  background-color: red;
+  display: flex;
+  flex-flow: column wrap;
+  padding: 30px;
+  justify-items: center;
+}
+.textContainer {
+  width: 80%;
+  align-self: center;
+}
+.rightContainer {
+  width: 40% !important;
+  display: flex;
+  flex-flow: column-reverse wrap;
+  overflow-x: hidden;
+  background: transparent;
+}
