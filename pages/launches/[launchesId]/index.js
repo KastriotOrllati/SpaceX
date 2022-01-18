@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useQuery } from "@apollo/client";
 import { Image, Typography, Row, Col, Space, Spin } from "antd";
 import { DEFAULTPHOTOS, TEXT } from "../../../assets/images";
-import { SINGLE_LAUNCH } from "../../GraphQL/Queries";
+import { SINGLE_LAUNCH } from "../../../GraphQL/Queries";
 import styles from "../../../styles/Index.module.css";
 const { Text } = Typography;
 

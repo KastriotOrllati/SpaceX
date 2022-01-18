@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { Row, Col, Grid, Divider, Spin, Space, Image } from "antd";
-import { ALL_LAUNCHES } from "./GraphQL/Queries";
+import { ALL_LAUNCHES } from "../GraphQL/Queries";
 import styles from "../styles/Homepage.module.css";
 import Card from "../Components/Card/Card";
 import Link from "next/link";
