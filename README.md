@@ -2,6 +2,15 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
+This mini application is build using dependecies:
+
+    @apollo/client": "^3.5.7
+    antd: ^4.18.3
+    graphql: ^16.2.0
+    next: "12.0.8
+    react": 17.0.2
+    react-dom": 17.0.2
+
 First, run the development server:
 
 ```bash

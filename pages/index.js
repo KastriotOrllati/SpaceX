@@ -1,37 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
+import { Row, Col, Grid, Divider, Spin, Space, Image } from "antd";
+import { ALL_LAUNCHES } from "./GraphQL/Queries";
+import styles from "../styles/Homepage.module.css";
 import Card from "../Components/Card/Card";
 import Link from "next/link";
-import { Row, Col, List, Grid, Tag, Divider } from "antd";
-
-const LaunchQuery = gql`
-  {
-    launchesPast(limit: 12) {
-      mission_name
-      launch_date_local
-      links {
-        flickr_images
-      }
-      rocket {
-        rocket_name
-      }
-      ships {
-        name
-        image
-      }
-      launch_site {
-        site_name
-      }
-      id
-    }
-  }
-`;
 
 const { useBreakpoint } = Grid;
-//, background: "#00a0e9"
 
 export default function Home() {
-  const { data, error, loading } = useQuery(LaunchQuery);
+  const { data, error, loading } = useQuery(ALL_LAUNCHES);
   const [launches, setLaunches] = useState([]);
   const screens = useBreakpoint();
 
@@ -40,21 +18,31 @@ export default function Home() {
       setLaunches(data.launchesPast);
     }
   }, [data]);
-  //  style={{ width: "100%", backgroundColor: "red" }}
-  console.log("screens", screens);
+
+  if (error) return <div>Ooops....something went wrong !</div>;
+  if (loading)
+    return (
+      <Space size="middle" className={styles.loader}>
+        <Spin size="large" />{" "}
+      </Space>
+    );
   return (
-    <div
-      style={{
-        display: "flex",
-        flexFlow: "row wrap",
-        justifyContent: "center",
-      }}
-    >
+    <div className={styles.mainContainer}>
       <Divider orientation="center">
-        <h1 style={{ fontSize: "64px" }}>SpaceX Launches</h1>
+        <h1 style={{ fontSize: "64px" }}>
+          <Image
+            width={900}
+            height={150}
+            preview={false}
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/SpaceX-Logo.svg/1920px-SpaceX-Logo.svg.png"
+            alt="SpaceX Logo"
+          />
+        </h1>
       </Divider>
       <Divider orientation="center">
-        <p>Information and details about SpaceX past launches</p>
+        <p style={{ fontSize: 40 }}>
+          Information and details about SpaceX launches.
+        </p>
       </Divider>
       <Row
         justify="center"

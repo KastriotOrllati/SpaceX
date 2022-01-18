@@ -26,25 +26,5 @@ const Card = ({
     </AntCard>
   );
 };
-// <div>
-//   <h5>{missionName}</h5>
-//   <div>Launched at: {launchDate}</div>
-//   <img
-//     src={image ? image : defaultImage}
-//     style={{ width: "100px", height: "100px" }}
-//     alt={missionName}
-//   />
-//   <div>Rocket name: {rocketName}</div>
-// </div>
 
 export default Card;
-// {ships.map((ship, i) => (
-//   <div key={i}>
-//     <div>Ship name: {ship.name}</div>
-//     <img
-//       src={ship.image}
-//       alt={ship.name}
-//       style={{ width: "100px", height: "100px" }}
-//     />
-//   </div>
-// ))}

@@ -1,163 +1,121 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { gql, useQuery } from "@apollo/client";
-import { Image, Divider, Descriptions } from "antd";
+import { useQuery } from "@apollo/client";
+import { Image, Typography, Row, Col, Space, Spin } from "antd";
+import { DEFAULTPHOTOS, TEXT } from "../../../assets/images";
+import { SINGLE_LAUNCH } from "../../GraphQL/Queries";
 import styles from "../../../styles/Index.module.css";
-const singleItem = gql`
-  query ($id: ID!) {
-    launch(id: $id) {
-      id
-      mission_name
-      launch_date_local
-      launch_site {
-        site_name
-      }
-      links {
-        article_link
-        wikipedia
-        reddit_campaign
-        reddit_launch
-        mission_patch
-        presskit
-        flickr_images
-      }
-      ships {
-        name
-        image
-      }
-      rocket {
-        rocket_name
-        rocket_type
-      }
-      details
-    }
-  }
-`;
+const { Text } = Typography;
 
 function Launches() {
   const [launch, setLaunch] = useState({});
   const router = useRouter();
   const launchesId = router.query.launchesId;
-  const { data, loading, error } = useQuery(singleItem, {
+  const info = launch.launch;
+  const { data, loading, error } = useQuery(SINGLE_LAUNCH, {
     variables: { id: launchesId },
   });
+
   useEffect(() => {
     if (data) {
       setLaunch(data);
     }
   }, [data]);
 
-  console.log(launch);
-  if (loading) return <div>Loading...</div>;
+  if (loading)
+    return (
+      <Space size="middle" className={styles.loader}>
+        <Spin size="large" />{" "}
+      </Space>
+    );
+  if (error) return <div>Ooops....something went wrong</div>;
 
-  // <div>Hello from launch number: {launchesId}</div>
-  //  justifySelf: "center",
-  //     justifyContent: "center",
-  //     justifyItems: "center",
-  //     alignContent: "center",
-  //     alignItems: "center",
-  //     alignSelf: "center",
-  //     width: "80%",
-
-  //working but lame
-  //  height: "100vh",
-  // width: "40%",
-  // display: "flex",
-  // flexFlow: "column wrap",
-  // alignItems: "center",
-  if (loading) return <div>loading....</div>;
   return (
     <div className={styles.mainContainer}>
-      <div className={styles.centerContainer}>
-        <div className={styles.leftContainer}>
-          <Divider orientation="center">
-            <h1 style={{ size: 120 }}> {launch?.launch?.mission_name}</h1>
-          </Divider>
-          <div className={styles.textContainer}>{launch?.launch?.details}</div>
-        </div>
-        <div className={styles.rightContainer}>
-          <Image.PreviewGroup className={styles.gallery}>
-            {launch?.launch?.links?.flickr_images?.map((photo, index) => (
-              <Image
-                width={269}
-                height={209}
-                src={photo}
-                key={index}
-                alt={launch.launch.mission_name}
-              />
-            ))}
-          </Image.PreviewGroup>
-        </div>
-      </div>
+      <Row justify="center" className={styles.centerContainer}>
+        <Col span={10} xs={24} className={styles.leftContainer}>
+          <h1> {info?.mission_name}</h1>
+
+          <p className={styles.textContainer}>
+            {info?.details ? launch.launch.details : TEXT}
+          </p>
+          <div className={styles.textContainer}>
+            <h2>Extra info</h2>
+            <ul className={styles.list}>
+              <li>
+                Launch:{" "}
+                <Text type={info?.launch_success ? "success" : "danger"}>
+                  {info?.launch_success ? "Success" : "Failure"}
+                </Text>{" "}
+              </li>
+              <li>
+                Rocket Name: {info?.rocket.rocket_name} -{" "}
+                {info?.rocket.rocket_type}
+              </li>
+              <li>Launch Date : {info?.launch_date_local}</li>
+              <li></li>
+              Read More:{" "}
+              <a
+                href={info?.links?.reddit_campaign}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Reddit
+              </a>
+              {"  "}
+              <a href={info?.links?.wikipedia}>Wikipedia</a>
+            </ul>
+          </div>
+        </Col>
+        <Col span={8} xs={24} className={styles.rightContainer}>
+          <Row wrap gutter={[0, 0]} className={styles.gallery}>
+            {info?.links?.flickr_images.length !== 0 ? (
+              <Col span={8} xs={24} className={styles.rightContainer}>
+                <Row wrap gutter={[0, 0]}>
+                  <Image.PreviewGroup>
+                    {info?.links?.flickr_images?.map((photo, index) => (
+                      <Col span={12} flex key={index}>
+                        <Image
+                          src={photo}
+                          alt={info?.mission_name}
+                          width={230}
+                          height={200}
+                          className={styles.gallery}
+                        />
+                      </Col>
+                    ))}
+                  </Image.PreviewGroup>
+                </Row>
+              </Col>
+            ) : (
+              <Col span={8} xs={24} className={styles.rightContainer}>
+                <Row wrap gutter={[0, 0]}>
+                  <Image.PreviewGroup>
+                    {DEFAULTPHOTOS.map((photo, index) => (
+                      <Col
+                        span={12}
+                        flex
+                        key={index}
+                        className={styles.galleryCol}
+                      >
+                        <Image
+                          width={230}
+                          height={200}
+                          src={photo}
+                          alt={index}
+                          className={styles.gallery}
+                        />
+                      </Col>
+                    ))}
+                  </Image.PreviewGroup>
+                </Row>
+              </Col>
+            )}
+          </Row>
+        </Col>
+      </Row>
     </div>
   );
 }
 
 export default Launches;
-
-// <h1> Mission name: {launch?.launch_site.mission_name}</h1>
-
-//working main
-// <div
-//     style={{
-//       display: "flex",
-//       flexFlow: "row wrap",
-//       flex: "1 1",
-//       justifyContent: "center",
-//     }}
-//   >
-//     <div
-//       style={{
-//         backgroundColor: "red",
-//         width: "50%",
-//         display: "flex",
-//         flexFlow: "column wrap",
-//       }}
-//     >
-//       <Divider orientation="left">
-//         <h1 style={{ size: 120 }}> {launch?.launch?.mission_name}</h1>
-//       </Divider>
-
-//       <div style={{ paddingTop: "20px" }}>{launch?.launch?.details}</div>
-//       <Descriptions
-//         title={launch?.launch?.mission_name}
-//         style={{ paddingTop: "20px" }}
-//       >
-//         <Descriptions.Item span={24} label="Launch site">
-//           {launch?.launch?.launch_site.site_name}
-//         </Descriptions.Item>
-//         <Descriptions.Item span={24} label="Launch Date">
-//           {launch?.launch?.launch_date_local}
-//         </Descriptions.Item>
-//         <Descriptions.Item label="Rocket" span={24}>
-//           {launch?.launch?.rocket.rocket_name} -{" "}
-//           {launch?.launch?.rocket.rocket_type}
-//         </Descriptions.Item>
-
-//         <Descriptions.Item
-//           span={24}
-//           label="Extra Resources for this launch: "
-//         >
-//           <a href={launch?.launch?.links?.reddit_campaign}>Reddit</a>
-
-//           <a href={launch?.launch?.links?.wikipedia}>Wikipedia</a>
-//         </Descriptions.Item>
-
-//         <Descriptions.Item label="Address">
-//           No. 18, Wantang Road, Xihu District, Hangzhou, Zhejiang, China
-//         </Descriptions.Item>
-//       </Descriptions>
-//     </div>
-//     <div style={{ backgroundColor: "blue", width: "40%" }}>
-//       <Image.PreviewGroup>
-//         {launch?.launch?.links?.flickr_images?.map((photo, index) => (
-//           <Image
-//             width={200}
-//             height={200}
-//             src={photo}
-//             key={index}
-//             alt={launch.launch.mission_name}
-//           />
-//         ))}
-//       </Image.PreviewGroup>
-//     </div>
